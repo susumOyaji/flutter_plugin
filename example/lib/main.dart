@@ -35,6 +35,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String _dialogResult = 'Unknown';
   //Future<void> _launched;
   String _phone = '09024922369';
 
@@ -42,10 +43,34 @@ class _MyAppState extends State<MyApp> {
   String _androidphone = 'Dial';
   String _hangstate = "HangUp";
 
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
   //void setState() async {
-  //_androidphone = phonestate;
-  //_hangstate = hangupstate;
+  //  _androidphone = phonestate;
+  //  _hangstate = hangupstate;
   //}
+
+  Future<void> initPlatformState() async {
+    String dialogResult;
+    try {
+      dialogResult = await PlatformOriginDialog.showDialog("確認", "保存しますか？");
+    } on PlatformException {
+      dialogResult = 'Failed to show Dialog.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _dialogResult = dialogResult;
+    });
+  }
 
   Future<void> _getphonestate() async {
     String phonestate;

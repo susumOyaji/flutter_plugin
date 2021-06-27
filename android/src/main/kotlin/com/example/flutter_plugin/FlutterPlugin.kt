@@ -44,6 +44,24 @@ public class FlutterPlugin: FlutterPlugin, MethodCallHandler {
     } else {
       result.notImplemented()
     }
+
+    if (call.method.equals("show_dialog")) {
+      val context = registrar.view().context
+      val title = call.argument<String>("title")
+      val message = call.argument<String>("message")
+      AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert).apply {
+        setTitle(title)
+        setMessage(message)
+        setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+          result.success("Tap OK")
+        })
+        setNegativeButton("Cancel", DialogInterface.OnClickListener { _, _ ->
+          result.success("Tap Cancel")
+        })
+        show()
+      }
+    }
+
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
